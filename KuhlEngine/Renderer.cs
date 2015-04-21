@@ -7,31 +7,30 @@ namespace KuhlEngine
 {
     public class Renderer
     {
-        public delegate void RenderHandler(Image aFrame, int aWidth, int aHeight);
+        // Renderevent
+        public delegate void RenderHandler(Image aFrame);
         public static RenderHandler newFrame;
 
-        Thread WorkerThread = new Thread(Worker);
+        // settings
+        private int mFPS = 30;
+        private int mWidth = 300;
+        private int mHeight = 300;
+        private Texture mBackground = new Texture();
 
-        private Map mMap;
-        private static int mFPS = 30;
+        public int FPS { get { return mFPS; } set { mFPS = value; } }
+        public int Width { get { return mWidth; } set { mWidth = value; } }
+        public int Height { get { return mHeight; } set { mHeight = value; } }
+        public Texture Background { get { return mBackground; } set { mBackground = value; } }
 
-        public Boolean initializeMap(int aWidth, int aHeight, Texture aTexture)
+        public Boolean Start()
         {
-            try
-            {
-                mMap = new Map(aWidth, aHeight, aTexture);
-                WorkerThread.Start();
-                //if (this.newFrame != null) this.newFrame(aTexture.Image, aTexture.Image.Width, aTexture.Image.Height);
+            Thread WorkerThread = new Thread(Worker);
+            WorkerThread.Start();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
 
-        private static void Worker()
+        private void Worker()
         {
             while (true)
             {
@@ -39,26 +38,16 @@ namespace KuhlEngine
                 watch.Start();
                 //Do jobs
 
+                Frame frame = new Frame(mWidth, mHeight, mBackground);
+
 
                 //No more jobs
                 //Fire event
-                if (newFrame != null) newFrame(null, 0, 0);
+                if (newFrame != null) newFrame(frame.Image);
                 watch.Stop();
                 int mSleep = 1000 / mFPS - Convert.ToInt32(watch.ElapsedMilliseconds);
                 if (mSleep > 0) Thread.Sleep(mSleep);
 
-            }
-        }
-
-        public int FPS
-        {
-            get
-            {
-                return mFPS;
-            }
-            set
-            {
-                mFPS = value;
             }
         }
     }

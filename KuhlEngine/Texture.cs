@@ -26,6 +26,14 @@ namespace KuhlEngine
         }
 
         /// <summary>
+        /// Just nothing.
+        /// </summary>
+        public Texture()
+        {
+            mTexture = new Bitmap(16, 16);
+        }
+
+        /// <summary>
         ///     Resize an Image to a specified size
         /// </summary>
         /// <param name="aWidth">new width</param>

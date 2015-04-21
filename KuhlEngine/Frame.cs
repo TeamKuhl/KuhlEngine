@@ -11,9 +11,12 @@ namespace KuhlEngine
     {
         private Image mFrame;
 
-        public Frame(int aWidth, int aHeight)
-        {
+        public Image Image { get { return mFrame; } }
 
+        public Frame(int aWidth, int aHeight, Texture aBackground)
+        {
+            aBackground.Resize(aWidth, aHeight);
+            mFrame = aBackground.Image;
         }
 
     }
