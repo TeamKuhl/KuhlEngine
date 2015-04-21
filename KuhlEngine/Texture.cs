@@ -9,6 +9,10 @@ namespace KuhlEngine
         private Image mTexture;
         private Boolean mStretch = true;    //true = Stretch the Image; false = Repeat the Image
 
+        public Image Image { get { return mTexture; } }
+        public Boolean Stretch { get { return mStretch; } set { mStretch = value; } }
+
+
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -77,32 +81,6 @@ namespace KuhlEngine
             catch
             {
                 return false;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the Texture as Image
-        /// </summary>
-        public Image Image
-        {
-            get
-            {
-                return mTexture;
-            }
-        }
-
-        /// <summary>
-        ///     Should the Texture be stretched
-        /// </summary>
-        public Boolean Stretch
-        {
-            get
-            {
-                return mStretch;
-            }
-            set
-            {
-                mStretch = value;
             }
         }
     }
