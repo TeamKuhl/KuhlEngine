@@ -11,7 +11,9 @@ namespace KuhlEngine
         public static RenderHandler newFrame;
 
         Thread WorkerThread = new Thread(Worker);
+
         private Map mMap;
+        private static int mFPS = 30;
 
         public Boolean initializeMap(int aWidth, int aHeight, Texture aTexture)
         {
@@ -42,14 +44,22 @@ namespace KuhlEngine
                 //Fire event
                 if (newFrame != null) newFrame(null, 0, 0);
                 watch.Stop();
-                int mSleep = 33 - Convert.ToInt32(watch.ElapsedMilliseconds);
+                int mSleep = 1000 / mFPS - Convert.ToInt32(watch.ElapsedMilliseconds);
                 if (mSleep > 0) Thread.Sleep(mSleep);
 
             }
         }
 
-
-
-
+        public int FPS
+        {
+            get
+            {
+                return mFPS;
+            }
+            set
+            {
+                mFPS = value;
+            }
+        }
     }
 }
