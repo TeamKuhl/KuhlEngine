@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 
@@ -11,6 +7,7 @@ namespace KuhlEngine
     public class Texture
     {
         private Image mTexture;
+        private Boolean mStretch = true;    //true = Stretch the Image; false = Repeat the Image
 
         /// <summary>
         ///     Constructor
@@ -33,13 +30,12 @@ namespace KuhlEngine
         /// </summary>
         /// <param name="aWidth">new width</param>
         /// <param name="aHeight">new height</param>
-        /// <param name="aStretch">true = Stretch the Image; false = Repeat the Image</param>
         /// <returns>success</returns>
-        public Boolean Resize(int aWidth, int aHeight, Boolean aStretch)
+        internal Boolean Resize(int aWidth, int aHeight)
         {
             try
             {
-                if (aStretch)
+                if (mStretch)
                 {
                     //Stretch Image
                     mTexture = new Bitmap(mTexture, new Size(aWidth, aHeight));
@@ -84,6 +80,21 @@ namespace KuhlEngine
             get
             {
                 return mTexture;
+            }
+        }
+
+        /// <summary>
+        ///     Should the Texture be stretched
+        /// </summary>
+        public Boolean Stretch
+        {
+            get
+            {
+                return mStretch;
+            }
+            set
+            {
+                mStretch = value;
             }
         }
     }

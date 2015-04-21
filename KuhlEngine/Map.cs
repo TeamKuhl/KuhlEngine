@@ -10,7 +10,7 @@ namespace KuhlEngine
     {
         public Map(int aWidth, int aHeight, Texture aTexture)
         {
-            aTexture.Resize(aWidth, aHeight, true);
+            aTexture.Resize(aWidth, aHeight);
         }
     }
 }
