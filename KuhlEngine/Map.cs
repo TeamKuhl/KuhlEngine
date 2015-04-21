@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace KuhlEngine
 {
-    class Map
+    public class Map
     {
         public Map(int aWidth, int aHeight, Texture aTexture)
         {
-
+            aTexture.Resize(aWidth, aHeight, true);
         }
     }
 }

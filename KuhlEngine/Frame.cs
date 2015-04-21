@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace KuhlEngine
 {
-    class Frame
+    public class Frame
     {
         private Image mFrame;
 

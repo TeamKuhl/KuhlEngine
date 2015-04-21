@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KuhlEngine
 {
-    class Item
+    public class Item
     {
     }
 }
