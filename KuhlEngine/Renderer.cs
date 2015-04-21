@@ -60,7 +60,7 @@ namespace KuhlEngine
                 watch.Start();
                 //Do jobs
 
-                Frame frame = new Frame(mWidth, mHeight, mBackground);
+                Frame frame = new Frame(mWidth, mHeight, mBackground, mItems);
 
 
 

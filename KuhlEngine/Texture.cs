@@ -6,6 +6,7 @@ namespace KuhlEngine
 {
     public class Texture
     {
+        private Image mOriTexture;
         private Image mTexture;
         private Boolean mStretch = true;    //true = Stretch the Image; false = Repeat the Image
 
@@ -21,11 +22,11 @@ namespace KuhlEngine
         {
             if (!File.Exists(aPath))
             {
-                mTexture = new Bitmap(16, 16);
+                mOriTexture = new Bitmap(16, 16);
             }
             else
             {
-                mTexture = Image.FromFile(aPath, true);
+                mOriTexture = Image.FromFile(aPath, true);
             }
         }
 
@@ -34,7 +35,7 @@ namespace KuhlEngine
         /// </summary>
         public Texture()
         {
-            mTexture = new Bitmap(16, 16);
+            mOriTexture = new Bitmap(16, 16);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace KuhlEngine
                 if (mStretch)
                 {
                     //Stretch Image
-                    mTexture = new Bitmap(mTexture, new Size(aWidth, aHeight));
+                    mTexture = new Bitmap(mOriTexture, new Size(aWidth, aHeight));
                 }
                 else
                 {

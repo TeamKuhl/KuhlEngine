@@ -19,14 +19,9 @@ namespace KuhlEngine
         // getter and setter
         public int X { get { return mX; } set { mX = value; } }
         public int Y { get { return mY; } set { mY = value; } }
-        public int Width { get { return mWidth; } set { resizeTexture(); mWidth = value; } }
-        public int Height { get { return mHeight; } set { resizeTexture(); mHeight = value; } }
-        public Texture Texture { get { return mTexture; } set { resizeTexture(); mTexture = value; } }
+        public int Width { get { return mWidth; } set { mWidth = value; } }
+        public int Height { get { return mHeight; } set { mHeight = value; } }
+        public Texture Texture { get { return mTexture; } set { mTexture = value; } }
         public bool Visible { get { return mVisible; } set { mVisible = value; } }
-
-        private void resizeTexture()
-        {
-            mTexture.Resize(mWidth, mHeight);
-        }
     }
 }
