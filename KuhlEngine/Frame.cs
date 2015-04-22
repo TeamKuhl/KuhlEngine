@@ -13,8 +13,6 @@ namespace KuhlEngine
 
         public Image Image { get { return mFrame; } }
 
-        private Dictionary<string, Item> oldItems;
-
         public Frame(int aWidth, int aHeight, Texture aBackground, Dictionary<string, Item> aItems)
         {
             // Draw background
