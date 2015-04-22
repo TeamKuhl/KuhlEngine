@@ -31,7 +31,7 @@ namespace KuhlEngine
             mFrame = aBackground.Image;
 
             // get graphic from image
-            Graphics graphic = Graphics.FromImage(mFrame);
+            Graphics drawGraphic = Graphics.FromImage(mFrame);
 
             // sort layers
             var sortedItems = from pair in aItems orderby pair.Value.Layer ascending select pair;
@@ -43,11 +43,11 @@ namespace KuhlEngine
                 Texture texture = Keypair.Value.Texture;
 
                 // draw texture on frame graphic
-                graphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
             }
 
             // dispose graphic
-            graphic.Dispose();
+            drawGraphic.Dispose();
         }
 
         #endregion
