@@ -172,23 +172,23 @@ namespace KuhlEngine
         {
             try
             {
+                Image tempTexture;
+
                 if (mStretch)
                 {
                     // stretch Image
-                    mTexture = new Bitmap(mOriTexture, new Size(aWidth, aHeight));
+                    tempTexture = new Bitmap(mOriTexture, new Size(aWidth, aHeight));
+                    mTexture = tempTexture;
                 }
                 else
                 {
-                    // set image
-                    mTexture = mOriTexture;
-
                     // calculate needed x repetions
-                    int widthAmount = aWidth / mTexture.Width;
-                    if ((aWidth % mTexture.Width) != 0) widthAmount++;
+                    int widthAmount = aWidth / mOriTexture.Width;
+                    if ((aWidth % mOriTexture.Width) != 0) widthAmount++;
 
                     // calculate needed y repetitions
-                    int heightAmount = aHeight / mTexture.Height;
-                    if ((aHeight % mTexture.Height) != 0) heightAmount++;
+                    int heightAmount = aHeight / mOriTexture.Height;
+                    if ((aHeight % mOriTexture.Height) != 0) heightAmount++;
 
                     // create new texture and graphic
                     Bitmap Texture = new Bitmap(aWidth, aHeight);
@@ -199,7 +199,7 @@ namespace KuhlEngine
                     {
                         for (int xCount = 0; xCount < widthAmount; xCount++)
                         {
-                            g.DrawImage(mTexture, new Point(mTexture.Width * xCount, mTexture.Height * yCount));
+                            g.DrawImage(mOriTexture, new Point(mOriTexture.Width * xCount, mOriTexture.Height * yCount));
                         }
                     }
 
