@@ -4,6 +4,9 @@ using System.IO;
 
 namespace KuhlEngine
 {
+    /// <summary>
+    /// Creates, saves and changes texture images or colors
+    /// </summary>
     public class Texture
     {
 

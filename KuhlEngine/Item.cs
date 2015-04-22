@@ -1,6 +1,9 @@
 ﻿
 namespace KuhlEngine
 {
+    /// <summary>
+    /// Item object to save all propertys needed for the rendered items
+    /// </summary>
     public class Item
     {
 

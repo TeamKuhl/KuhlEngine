@@ -4,6 +4,9 @@ using System.Drawing;
 
 namespace KuhlEngine
 {
+    /// <summary>
+    /// Renders one frame with the given background and the given items
+    /// </summary>
     internal class Frame
     {
 

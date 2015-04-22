@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace KuhlEngine
 {
+    /// <summary>
+    /// Main engine class, runs main process, manages items, renders frames
+    /// </summary>
     public class Renderer
     {
         #region Declarations
