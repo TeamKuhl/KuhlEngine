@@ -1,43 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 
 namespace KuhlEngine
 {
-    public class Frame
+    internal class Frame
     {
-        private Image mFrame;
 
+        #region Declarations
+
+        // final drawing image, only readable
+        private Image mFrame;
         public Image Image { get { return mFrame; } }
 
+        #endregion
+
+        #region Constructor & Drawer
+
+        /// <summary>
+        /// Frame constructor, renders frame immediately, you can get it with Frame.Image
+        /// </summary>
+        /// <param name="aWidth">Width of the frame</param>
+        /// <param name="aHeight">Height of the frame</param>
+        /// <param name="aBackground">Background texture</param>
+        /// <param name="aItems">Dictionary with items to draw. Note: this dictionary should be a temporary copy of the original dictionary.</param>
         public Frame(int aWidth, int aHeight, Texture aBackground, Dictionary<string, Item> aItems)
         {
-            // Draw background
+            // draw background
             aBackground.Resize(aWidth, aHeight);
             mFrame = aBackground.Image;
 
-            Graphics g = Graphics.FromImage(mFrame);
+            // get graphic from image
+            Graphics graphic = Graphics.FromImage(mFrame);
 
             // sort layers
             var sortedItems = from pair in aItems orderby pair.Value.Layer ascending select pair;
 
-            //Draw items
-            //for (int iCount = 0; iCount < aItems.Count; iCount++)
-            //{
+            // draw items
             foreach (KeyValuePair<string, Item> Keypair in sortedItems)
             {
+                // get texture
                 Texture texture = Keypair.Value.Texture;
-                //if (texture.FlipX) texture.doFlipX();
-                //if (texture.FlipY) texture.doFlipY();
-                texture.Resize(Keypair.Value.Width, Keypair.Value.Height);
-                g.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+
+                // draw texture on frame graphic
+                graphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
             }
 
-            g.Dispose();
+            // dispose graphic
+            graphic.Dispose();
         }
+
+        #endregion
+
     }
 
 
