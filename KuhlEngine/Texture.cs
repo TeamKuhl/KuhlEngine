@@ -57,6 +57,20 @@ namespace KuhlEngine
         }
 
         /// <summary>
+        /// Color + transperency constructor
+        /// </summary>
+        /// <param name="aImage"></param>
+        public Texture(int aR, int aG, int aB, int aT)
+        {
+            mOriTexture = new Bitmap(16, 16);
+            Graphics g = Graphics.FromImage(mOriTexture);
+            Color clr = Color.FromArgb(aT, aR, aG, aB);
+            Brush brush = new System.Drawing.SolidBrush(clr);
+            g.FillRectangle(brush, 0, 0, 20, 20);
+            mTexture = mOriTexture;
+        }
+
+        /// <summary>
         /// Just nothing.
         /// </summary>
         public Texture()
