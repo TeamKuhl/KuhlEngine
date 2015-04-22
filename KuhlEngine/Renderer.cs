@@ -33,7 +33,7 @@ namespace KuhlEngine
         /// <summary>
         /// Maximum Frames Per Second: If there is time left, the engine will wait the remaining 1/FPS seconds until next frame
         /// </summary>
-        public int FPS { get { return mFPS; } set { mFPS = value; } }
+        public int FPS { get { return mFPS; } set { if(value > 0) mFPS = value; } }
 
         /// <summary>
         /// Width of the rendered frames
