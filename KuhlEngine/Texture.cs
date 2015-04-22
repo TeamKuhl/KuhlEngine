@@ -127,12 +127,13 @@ namespace KuhlEngine
         /// Flip the image to the x-axis
         /// </summary>
         /// <returns></returns>
-        internal Boolean FlipX()
+        public Boolean FlipX()
         {
             try
             {
-                mTexture = mOriTexture;
-                mTexture.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                Image tempTexture = mOriTexture;
+                tempTexture.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                mTexture = tempTexture;
                 return true;
             }
             catch
@@ -145,12 +146,13 @@ namespace KuhlEngine
         /// Flip the image to the y-axis
         /// </summary>
         /// <returns></returns>
-        internal Boolean FlipY()
+        public Boolean FlipY()
         {
             try
             {
-                mTexture = mOriTexture;
-                mTexture.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                Image tempTexture = mOriTexture;
+                tempTexture.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                mTexture = tempTexture;
                 return true;
             }
             catch
