@@ -19,7 +19,7 @@ namespace KuhlEngine
 
         // itemcontainer
         private Dictionary<string, Item> mItems = new Dictionary<string, Item>();
-
+        private readonly object mSyncLock = new object();
         #endregion
 
         #region Settings
@@ -77,11 +77,13 @@ namespace KuhlEngine
                 watch.Start();
 
                 // move item dictionary to a temporary dictionary to avoid problems with changes while rendering
-                Dictionary<string, Item> tempItems = new Dictionary<string, Item>();
-                foreach (KeyValuePair<string, Item> keyPair in mItems)
-                {
-                    tempItems[keyPair.Key] = keyPair.Value;
-                }
+                //Dictionary<string, Item> tempItems = new Dictionary<string, Item>();
+                //foreach (KeyValuePair<string, Item> keyPair in mItems)
+                //{
+                //    tempItems[keyPair.Key] = keyPair.Value;
+                //}
+               
+                Dictionary<string, Item> tempItems = copyDict(mItems);
 
                 // create frame (main rendering)
                 Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems);
@@ -97,6 +99,21 @@ namespace KuhlEngine
             }
         }
 
+        private Dictionary<string, Item> copyDict(Dictionary<string, Item> source)
+        {
+            
+            lock (mSyncLock)
+            {
+                Dictionary<string, Item> target = new Dictionary<string, Item>();
+                foreach (KeyValuePair<string, Item> keyPair in source)
+                {
+                    target[keyPair.Key] = keyPair.Value;
+                }
+                return target;
+            }
+            
+        }
+
         #endregion
 
         #region Items
@@ -107,17 +124,20 @@ namespace KuhlEngine
         /// <returns>Item uuid</returns>
         public string CreateItem()
         {
-            // generate uuid
-            string uuid;
-            do
+            lock (mSyncLock)
             {
-                uuid = Guid.NewGuid().ToString();
-            } while (mItems.ContainsKey(uuid));
+                // generate uuid
+                string uuid;
+                do
+                {
+                    uuid = Guid.NewGuid().ToString();
+                } while (mItems.ContainsKey(uuid));
 
-            // create item
-            mItems.Add(uuid, new Item());
+                // create item
+                mItems.Add(uuid, new Item());
 
-            return uuid;
+                return uuid;
+            }
         }
 
         /// <summary>
@@ -145,17 +165,20 @@ namespace KuhlEngine
         /// <param name="aItem">Item object</param>
         public bool SetItem(string aUuid, Item aItem)
         {
-            // find item
-            if (mItems.ContainsKey(aUuid))
+            lock (mSyncLock)
             {
-                // resize texture and save
-                aItem.resizeTexture();
-                mItems[aUuid] = aItem;
-                return true;
-            }
-            else
-            {
-                return false;
+                // find item
+                if (mItems.ContainsKey(aUuid))
+                {
+                    // resize texture and save
+                    aItem.resizeTexture();
+                    mItems[aUuid] = aItem;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
