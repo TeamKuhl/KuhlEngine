@@ -219,6 +219,25 @@ namespace KuhlEngine
             }
         }
 
+        /// <summary>
+        /// Set the layer of an item
+        /// </summary>
+        /// <param name="aUuid"></param>
+        /// <param name="aLayer"></param>
+        /// <returns></returns>
+        public bool SetItemLayer(string aUuid, int aLayer)
+        {
+            if (mItems.ContainsKey(aUuid))
+            {
+                mItems[aUuid].Layer = aLayer;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         #endregion
 
     }

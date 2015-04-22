@@ -21,10 +21,13 @@ namespace KuhlEngine
 
             Graphics g = Graphics.FromImage(mFrame);
 
+            // sort layers
+            var sortedItems = from pair in aItems orderby pair.Value.Layer ascending select pair;
+
             //Draw items
             //for (int iCount = 0; iCount < aItems.Count; iCount++)
             //{
-            foreach (KeyValuePair<string, Item> Keypair in aItems)
+            foreach (KeyValuePair<string, Item> Keypair in sortedItems)
             {
                 Texture texture = Keypair.Value.Texture;
                 //if (texture.FlipX) texture.doFlipX();
