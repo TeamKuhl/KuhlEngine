@@ -15,7 +15,7 @@ namespace KuhlEngine
         private int mHeight = 32;
         private Texture mTexture = new Texture();
         private bool mVisible = false;
-
+       
         // getter and setter
         public int X { get { return mX; } set { mX = value; } }
         public int Y { get { return mY; } set { mY = value; } }

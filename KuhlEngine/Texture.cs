@@ -10,6 +10,7 @@ namespace KuhlEngine
         private Image mTexture;
         private Boolean mStretch = true;    //true = Stretch the Image; false = Repeat the Image
 
+
         public Image Image { get { return mTexture; } }
         public Boolean Stretch { get { return mStretch; } set { mStretch = value; } }
 
@@ -28,6 +29,17 @@ namespace KuhlEngine
             {
                 mOriTexture = Image.FromFile(aPath, true);
             }
+            mTexture = mOriTexture;
+        }
+
+        /// <summary>
+        /// Image constructor
+        /// </summary>
+        /// <param name="aImage"></param>
+        public Texture(Image aImage)
+        {
+            mOriTexture = aImage;
+            mTexture = mOriTexture;
         }
 
         /// <summary>
@@ -36,7 +48,45 @@ namespace KuhlEngine
         public Texture()
         {
             mOriTexture = new Bitmap(16, 16);
+            mTexture = mOriTexture;
         }
+
+        /// <summary>
+        /// Flip the image to the x-axis
+        /// </summary>
+        /// <returns></returns>
+        internal Boolean FlipX()
+        {
+            try
+            {
+                mTexture = mOriTexture;
+                mTexture.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Flip the image to the y-axis
+        /// </summary>
+        /// <returns></returns>
+        internal Boolean FlipY()
+        {
+            try
+            {
+                mTexture = mOriTexture;
+                mTexture.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         ///     Resize an Image to a specified size
@@ -55,6 +105,8 @@ namespace KuhlEngine
                 }
                 else
                 {
+                    //Set image
+                    mTexture = mOriTexture;
                     //Repeat Image
                     int widthAmount = aWidth / mTexture.Width;
                     if ((aWidth % mTexture.Width) != 0) widthAmount++;

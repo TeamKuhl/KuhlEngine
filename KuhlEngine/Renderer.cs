@@ -59,10 +59,14 @@ namespace KuhlEngine
                 var watch = new Stopwatch();
                 watch.Start();
                 //Do jobs
+                Dictionary<string, Item> tempItems = new Dictionary<string, Item>();
+                foreach (KeyValuePair<string, Item> keyPair in mItems)
+                {
+                    tempItems[keyPair.Key] = keyPair.Value;
+                }
 
-                Frame frame = new Frame(mWidth, mHeight, mBackground, mItems);
 
-
+                Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems);
 
                 //No more jobs
                 //Fire event (kill forms)
@@ -106,7 +110,7 @@ namespace KuhlEngine
         /// <returns></returns>
         public Item GetItem(string aUuid)
         {
-            if(mItems.ContainsKey(aUuid))
+            if (mItems.ContainsKey(aUuid))
             {
                 return mItems[aUuid];
             }
