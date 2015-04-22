@@ -45,8 +45,12 @@ namespace KuhlEngine
                 // get texture
                 Texture texture = Keypair.Value.Texture;
 
-                // draw texture on frame graphic
-                drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                try
+                {
+                    // draw texture on frame graphic
+                    drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                }
+                catch { }
             }
 
             // dispose graphic
