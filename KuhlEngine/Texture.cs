@@ -38,6 +38,25 @@ namespace KuhlEngine
             if (!File.Exists(aPath))
             {
                 mOriTexture = new Bitmap(16, 16);
+                
+                // create graphic to draw
+                Graphics g = Graphics.FromImage(mOriTexture);
+
+                // load color
+                Color clr = Color.FromArgb(255, 255, 0, 220);
+
+                // create brush
+                Brush brush = new System.Drawing.SolidBrush(clr);
+
+                // draw black image
+                g.Clear(Color.Black);
+
+                // draw brush on texture
+                g.FillRectangle(brush, 0, 0, 8, 8);
+                g.FillRectangle(brush, 8, 8, 16, 16);
+
+                // set texture
+                mTexture = mOriTexture;
             }
             else
             {
