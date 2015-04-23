@@ -17,6 +17,10 @@ namespace KuhlEngine
         public delegate void RenderHandler(Image aFrame);
         public static RenderHandler newFrame;
 
+        // collisionevent
+        public delegate void CollisionHandler(string aUUID1, string aUUID2);
+        public static CollisionHandler Collision;
+
         // itemcontainer
         private Dictionary<string, Item> mItems = new Dictionary<string, Item>();
         private readonly object mSyncLock = new object();
@@ -33,7 +37,7 @@ namespace KuhlEngine
         /// <summary>
         /// Maximum Frames Per Second: If there is time left, the engine will wait the remaining 1/FPS seconds until next frame
         /// </summary>
-        public int FPS { get { return mFPS; } set { if(value > 0) mFPS = value; } }
+        public int FPS { get { return mFPS; } set { if (value > 0) mFPS = value; } }
 
         /// <summary>
         /// Width of the rendered frames
@@ -82,11 +86,60 @@ namespace KuhlEngine
                 //{
                 //    tempItems[keyPair.Key] = keyPair.Value;
                 //}
-               
+
                 Dictionary<string, Item> tempItems = copyDict(mItems);
 
                 // create frame (main rendering)
                 Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems);
+
+                //experimental!
+
+                // create dictionary wit collision items
+                Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
+
+                // fill dictionary
+                foreach (KeyValuePair<string, Item> Keypair in tempItems)
+                {
+                    if (Keypair.Value.CheckCollision)
+                    {
+                        collisionItems[Keypair.Key] = Keypair.Value;
+                    }
+                }
+
+                List<string> checkedUUIDS = new List<string>();
+
+                foreach (KeyValuePair<string, Item> Keypair in collisionItems)
+                {
+                    foreach (KeyValuePair<string, Item> Keypair2 in collisionItems)
+                    {
+                        if (Keypair.Key != Keypair2.Key && checkedUUIDS.Contains(Keypair2.Key))
+                        {
+                            Item item1 = Keypair.Value;
+                            Item item2 = Keypair2.Value;
+
+                            Boolean xCollision = false;
+                            Boolean yCollision = true;
+
+                            // check for x-axis collision
+                            if (item2.X + item2.Width <= item1.X || item1.X + item1.Width <= item2.X) xCollision = false;
+                            else xCollision = true;
+
+                            // check for y-axis collision
+                            if (item1.Y >= item2.Y + item2.Height || item1.Y + item1.Height <= item2.Y) yCollision = false;
+                            else yCollision = true;
+
+                            if (xCollision && yCollision)
+                            {
+                                // fire collision event
+                                if (Collision != null) Collision(Keypair.Key, Keypair2.Key);
+                            }
+                        }
+                    }
+
+                    checkedUUIDS.Add(Keypair.Key);
+                }
+
+                //experimental!
 
                 // fire event
                 if (newFrame != null) newFrame(frame.Image);
@@ -101,7 +154,7 @@ namespace KuhlEngine
 
         private Dictionary<string, Item> copyDict(Dictionary<string, Item> source)
         {
-            
+
             lock (mSyncLock)
             {
                 Dictionary<string, Item> target = new Dictionary<string, Item>();
@@ -111,7 +164,7 @@ namespace KuhlEngine
                 }
                 return target;
             }
-            
+
         }
 
         #endregion

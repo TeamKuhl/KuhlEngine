@@ -26,6 +26,9 @@ namespace KuhlEngine
         // visibility
         private bool mVisible = false;
 
+        // collision
+        private bool mCheckCollision = true;
+
         #endregion
 
         #region Getter & Setter
@@ -66,6 +69,10 @@ namespace KuhlEngine
         /// </summary>
         public bool Visible { get { return mVisible; } set { mVisible = value; } }
 
+        /// <summary>
+        /// If true the engine will check for collisions
+        /// </summary>
+        public bool CheckCollision { get { return mCheckCollision; } set { mCheckCollision = value; } }
         #endregion
 
         #region Functions
