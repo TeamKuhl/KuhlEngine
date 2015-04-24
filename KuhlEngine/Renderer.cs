@@ -119,7 +119,7 @@ namespace KuhlEngine
         /// Creates a default item and return its uuid
         /// </summary>
         /// <returns>Item uuid</returns>
-        public string CreateItem()
+        public Item CreateItem()
         {
             lock (mSyncLock)
             {
@@ -133,7 +133,7 @@ namespace KuhlEngine
                 // create item
                 mItems.Add(uuid, new Item(uuid));
 
-                return uuid;
+                return GetItem(uuid);
             }
         }
 

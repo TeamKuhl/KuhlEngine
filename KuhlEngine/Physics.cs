@@ -39,7 +39,7 @@ namespace KuhlEngine
                         // fire collision event
                         if (Event.Collision != null) Event.Collision(e);
 
-                        return false;
+                        if(e.Cancel) return false;
                     }
                 }
             }
