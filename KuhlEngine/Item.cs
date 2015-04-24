@@ -24,10 +24,13 @@ namespace KuhlEngine
         private Texture mTexture = new Texture();
 
         // visibility
-        private bool mVisible = false;
+        private bool mEnabled = false;
 
         // collision
-        private bool mCheckCollision = true;
+        private bool mCheckCollision = false;
+
+        // uuid
+        private string mUuid = "";
 
         #endregion
 
@@ -67,12 +70,27 @@ namespace KuhlEngine
         /// Item visibility, by default set to invisible to change item settings before starting to draw this item.
         /// You have to set this to true for every item.
         /// </summary>
-        public bool Visible { get { return mVisible; } set { mVisible = value; } }
+        public bool Enabled { get { return mEnabled; } set { mEnabled = value; } }
 
         /// <summary>
         /// If true the engine will check for collisions
         /// </summary>
         public bool CheckCollision { get { return mCheckCollision; } set { mCheckCollision = value; } }
+
+        /// <summary>
+        /// Item uuid
+        /// </summary>
+        public string Uuid { get { return mUuid; } }
+
+        #endregion
+
+        #region Constructor
+
+        public Item(string aUuid)
+        {
+            mUuid = aUuid;
+        }
+
         #endregion
 
         #region Functions
@@ -83,6 +101,22 @@ namespace KuhlEngine
         public void resizeTexture()
         {
             mTexture.Resize(mWidth, mHeight);
+        }
+
+        public Item getCopy()
+        {
+            // because c# is gay.
+            Item itm = new Item(mUuid);
+            itm.X = mX;
+            itm.Y = mY;
+            itm.Width = mWidth;
+            itm.Height = mHeight;
+            itm.CheckCollision = mCheckCollision;
+            itm.Enabled = mEnabled;
+            itm.Layer = mLayer;
+            itm.Texture = mTexture;
+
+            return itm;
         }
 
         #endregion

@@ -13,17 +13,10 @@ namespace KuhlEngine
     {
         #region Declarations
 
-        // renderevent
-        public delegate void RenderHandler(Image aFrame);
-        public static RenderHandler newFrame;
-
-        // collisionevent
-        public delegate void CollisionHandler(string aUUID1, string aUUID2);
-        public static CollisionHandler Collision;
-
         // itemcontainer
         private Dictionary<string, Item> mItems = new Dictionary<string, Item>();
         private readonly object mSyncLock = new object();
+
         #endregion
 
         #region Settings
@@ -92,57 +85,8 @@ namespace KuhlEngine
                 // create frame (main rendering)
                 Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems);
 
-                //experimental!
-
-                // create dictionary wit collision items
-                Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
-
-                // fill dictionary
-                foreach (KeyValuePair<string, Item> Keypair in tempItems)
-                {
-                    if (Keypair.Value.CheckCollision)
-                    {
-                        collisionItems[Keypair.Key] = Keypair.Value;
-                    }
-                }
-
-                List<string> checkedUUIDS = new List<string>();
-
-                foreach (KeyValuePair<string, Item> Keypair in collisionItems)
-                {
-                    foreach (KeyValuePair<string, Item> Keypair2 in collisionItems)
-                    {
-                        if (Keypair.Key != Keypair2.Key && checkedUUIDS.Contains(Keypair2.Key))
-                        {
-                            Item item1 = Keypair.Value;
-                            Item item2 = Keypair2.Value;
-
-                            Boolean xCollision = false;
-                            Boolean yCollision = true;
-
-                            // check for x-axis collision
-                            if (item2.X + item2.Width <= item1.X || item1.X + item1.Width <= item2.X) xCollision = false;
-                            else xCollision = true;
-
-                            // check for y-axis collision
-                            if (item1.Y >= item2.Y + item2.Height || item1.Y + item1.Height <= item2.Y) yCollision = false;
-                            else yCollision = true;
-
-                            if (xCollision && yCollision)
-                            {
-                                // fire collision event
-                                if (Collision != null) Collision(Keypair.Key, Keypair2.Key);
-                            }
-                        }
-                    }
-
-                    checkedUUIDS.Add(Keypair.Key);
-                }
-
-                //experimental!
-
                 // fire event
-                if (newFrame != null) newFrame(frame.Image);
+                if (Event.NewFrame != null) Event.NewFrame(frame.Image);
 
                 // take time and wait for next frame
                 watch.Stop();
@@ -187,7 +131,7 @@ namespace KuhlEngine
                 } while (mItems.ContainsKey(uuid));
 
                 // create item
-                mItems.Add(uuid, new Item());
+                mItems.Add(uuid, new Item(uuid));
 
                 return uuid;
             }
@@ -203,7 +147,7 @@ namespace KuhlEngine
             // find item
             if (mItems.ContainsKey(aUuid))
             {
-                return mItems[aUuid];
+                return mItems[aUuid].getCopy();
             }
             else
             {
@@ -224,9 +168,13 @@ namespace KuhlEngine
                 if (mItems.ContainsKey(aUuid))
                 {
                     // resize texture and save
-                    aItem.resizeTexture();
-                    mItems[aUuid] = aItem;
-                    return true;
+                    if (checkCollisions(aItem, CollisionType.Undefined))
+                    {
+                        aItem.resizeTexture();
+                        mItems[aUuid] = aItem;
+                        return true;
+                    }
+                    else return false;
                 }
                 else
                 {
@@ -246,10 +194,17 @@ namespace KuhlEngine
             // find item
             if (mItems.ContainsKey(aUuid))
             {
-                // set position
-                mItems[aUuid].X = aX;
-                mItems[aUuid].Y = aY;
-                return true;
+                Item item = mItems[aUuid].getCopy();
+                item.X = aX;
+                item.Y = aY;
+                if (checkCollisions(item, CollisionType.Move))
+                {
+                    // set position
+                    mItems[aUuid].X = aX;
+                    mItems[aUuid].Y = aY;
+                    return true;
+                }
+                else return false;
             }
             else
             {
@@ -287,13 +242,22 @@ namespace KuhlEngine
             // find item
             if (mItems.ContainsKey(aUuid))
             {
-                // set size
-                mItems[aUuid].Width = aWidth;
-                mItems[aUuid].Height = aHeight;
+                Item item = mItems[aUuid];
+                item.Width = aWidth;
+                item.Height = aHeight;
 
-                // resize texture to fit size
-                mItems[aUuid].resizeTexture();
-                return true;
+                if (checkCollisions(item, CollisionType.Resize))
+                {
+                    // set size
+                    mItems[aUuid].Width = aWidth;
+                    mItems[aUuid].Height = aHeight;
+
+                    // resize texture to fit size
+                    mItems[aUuid].resizeTexture();
+
+                    return true;
+                }
+                else return false;
             }
             else
             {
@@ -302,18 +266,26 @@ namespace KuhlEngine
         }
 
         /// <summary>
-        /// Set the visibility of an item
+        /// Set the enabled of an item
         /// </summary>
         /// <param name="aUuid">Item uuid</param>
-        /// <param name="aVisibility">Item visibility</param>
-        public bool SetItemVisibility(string aUuid, bool aVisibility)
+        /// <param name="aVisibility">Item enalbed</param>
+        public bool SetItemEnabled(string aUuid, bool aEnabled)
         {
             // find item
             if (mItems.ContainsKey(aUuid))
             {
-                // set visibility
-                mItems[aUuid].Visible = aVisibility;
-                return true;
+                Item item = mItems[aUuid];
+                item.Enabled = aEnabled;
+
+                if (!aEnabled || checkCollisions(item, CollisionType.Show))
+                {
+                    // set visibility
+                    mItems[aUuid].Enabled = aEnabled;
+                    return true;
+                }
+                else return false;
+
             }
             else
             {
@@ -340,6 +312,27 @@ namespace KuhlEngine
             {
                 return false;
             }
+        }
+
+        #endregion
+
+        #region Collisions
+
+        private bool checkCollisions(Item aItem, int aType)
+        {
+            // create dictionary with collision items
+            Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
+
+            // fill dictionary
+            foreach (KeyValuePair<string, Item> Keypair in copyDict(mItems))
+            {
+                if (Keypair.Value.CheckCollision && Keypair.Value.Enabled)
+                {
+                    collisionItems[Keypair.Key] = Keypair.Value;
+                }
+            }
+
+            return Physics.testForCollision(aItem, collisionItems, aType);
         }
 
         #endregion

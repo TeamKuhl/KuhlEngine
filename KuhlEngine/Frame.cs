@@ -42,15 +42,18 @@ namespace KuhlEngine
             // draw items
             foreach (KeyValuePair<string, Item> Keypair in sortedItems)
             {
-                // get texture
-                Texture texture = Keypair.Value.Texture;
-
-                try
+                if (Keypair.Value.Enabled)
                 {
-                    // draw texture on frame graphic
-                    drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                    // get texture
+                    Texture texture = Keypair.Value.Texture;
+
+                    try
+                    {
+                        // draw texture on frame graphic
+                        drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                    }
+                    catch { }
                 }
-                catch { }
             }
 
             // dispose graphic
