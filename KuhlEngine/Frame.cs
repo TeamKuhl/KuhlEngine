@@ -49,8 +49,20 @@ namespace KuhlEngine
 
                     try
                     {
-                        // draw texture on frame graphic
-                        drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                        if (true)
+                        {
+                            RectangleF destinationRect = new RectangleF(150, 20, 1.3f * aWidth, 1.3f * aHeight);
+                            RectangleF sourceRect = new RectangleF(0, 0, .75f * aWidth, .75f * aHeight);
+                            drawGraphic.DrawImage(texture.Image, destinationRect, sourceRect, GraphicsUnit.Pixel);
+                            
+                            // draw texture with special view on frame graphic
+                            //drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                        }
+                        else
+                        {
+                            // draw full texture on frame graphic
+                            drawGraphic.DrawImage(texture.Image, new Point(Keypair.Value.X, Keypair.Value.Y));
+                        }
                     }
                     catch { }
                 }
