@@ -138,6 +138,26 @@ namespace KuhlEngine
         }
 
         /// <summary>
+        /// Deletes an item
+        /// </summary>
+        /// <param name="aUuid"></param>
+        /// <returns></returns>
+        public bool DeleteItem(string aUuid)
+        {
+            // find item
+            if (mItems.ContainsKey(aUuid))
+            {
+                mItems.Remove(aUuid);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Get item by uuid
         /// </summary>
         /// <param name="aUuid">Item uuid</param>
@@ -160,18 +180,18 @@ namespace KuhlEngine
         /// </summary>
         /// <param name="aUuid">Item uuid</param>
         /// <param name="aItem">Item object</param>
-        public bool SetItem(string aUuid, Item aItem)
+        public bool SetItem(Item aItem)
         {
             lock (mSyncLock)
             {
                 // find item
-                if (mItems.ContainsKey(aUuid))
+                if (mItems.ContainsKey(aItem.Uuid))
                 {
                     // resize texture and save
                     if (checkCollisions(aItem, CollisionType.Undefined))
                     {
                         aItem.resizeTexture();
-                        mItems[aUuid] = aItem;
+                        mItems[aItem.Uuid] = aItem;
                         return true;
                     }
                     else return false;
