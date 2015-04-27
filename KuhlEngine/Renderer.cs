@@ -232,6 +232,29 @@ namespace KuhlEngine
             }
         }
 
+        public bool MoveItem(string aUuid, int aDirection, int aLength)
+        {
+            // find item
+            if (mItems.ContainsKey(aUuid))
+            {
+                Item item = mItems[aUuid].getCopy();
+                item.X = (int) (aLength * Math.Cos(aDirection));
+                item.Y = (int)(aLength * Math.Sin(aDirection));
+                if (checkCollisions(item, CollisionType.Move))
+                {
+                    // set position
+                    mItems[aUuid].X = (int)(aLength * Math.Cos(aDirection));
+                    mItems[aUuid].Y = (int)(aLength * Math.Sin(aDirection));
+                    return true;
+                }
+                else return false;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Set the texture of an item
         /// </summary>
