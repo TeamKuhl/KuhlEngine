@@ -56,7 +56,7 @@ namespace KuhlEngine
                 }
             }
 
-            if (true)
+            if (false)
             {
                 Image resizedFrame = new Bitmap(160, 80);
                 Graphics resizeGraphic = Graphics.FromImage(resizedFrame);

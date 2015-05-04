@@ -17,6 +17,9 @@ namespace KuhlEngine
         private Dictionary<string, Item> mItems = new Dictionary<string, Item>();
         private readonly object mSyncLock = new object();
 
+        //Start rendering
+        private Boolean mStart = false;
+
         #endregion
 
         #region Settings
@@ -66,8 +69,41 @@ namespace KuhlEngine
         /// </summary>
         private void Worker()
         {
+            if (!mStart)
+            {
+                //Render Logo
+                Texture background = new Texture(0, 0, 0);
+
+                //Render Logo
+                Texture logoTexture = new Texture("");
+
+                //Logo screen objects
+                Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
+
+                //Create logo item
+                Item logoItem = new Item("logo");
+                logoItem.Enabled = true;
+                logoItem.Texture = new Texture("");
+                logoItem.Width = 50;
+                logoItem.Height = 50;
+                logoItem.X = 0;
+                logoItem.Y = 0;
+
+                //Add object
+                logoObjects.Add("logo", logoItem);
+
+                // create Logo frame 
+                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
+
+                // fire event
+                if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+                Thread.Sleep(2000);
+
+                mStart = true;
+            }
+
             // main rendering loop
-            while (true)
+            while (mStart)
             {
                 // create stopwatch to measure time needed for rendering
                 var watch = new Stopwatch();
@@ -238,7 +274,7 @@ namespace KuhlEngine
             if (mItems.ContainsKey(aUuid))
             {
                 Item item = mItems[aUuid].getCopy();
-                item.X = (int) (aLength * Math.Cos(aDirection));
+                item.X = (int)(aLength * Math.Cos(aDirection));
                 item.Y = (int)(aLength * Math.Sin(aDirection));
                 if (checkCollisions(item, CollisionType.Move))
                 {
