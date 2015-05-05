@@ -78,17 +78,17 @@ namespace KuhlEngine
         /// <summary>
         /// Width of the rendered frames
         /// </summary>
-        public int Width { get { return mWidth; } set { mWidth = value; mP2x = value; } }
+        public int Width { get { return mWidth; } set { mWidth = value; mP2x = value; mBackground.Resize(mWidth, mHeight); } }
 
         /// <summary>
         /// Height of the rendered frames
         /// </summary>
-        public int Height { get { return mHeight; } set { mHeight = value; mP2y = value; } }
+        public int Height { get { return mHeight; } set { mHeight = value; mP2y = value; mBackground.Resize(mWidth, mHeight); } }
 
         /// <summary>
         /// A texture object for the background, will be empty/transparent if not set
         /// </summary>
-        public Texture Background { get { return mBackground; } set { mBackground = value; } }
+        public Texture Background { get { return mBackground; } set { mBackground = value; mBackground.Resize(mWidth, mHeight); } }
 
         /// <summary>
         /// Shows the TeamKuhl Startscreen
@@ -106,6 +106,7 @@ namespace KuhlEngine
         {
             // create new thread and start it
             Thread WorkerThread = new Thread(Worker);
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             WorkerThread.Start();
         }
 
@@ -127,14 +128,24 @@ namespace KuhlEngine
                 var watch = new Stopwatch();
                 watch.Start();
 
-                // move item dictionary to a temporary dictionary to avoid problems with changes while rendering
-                Dictionary<string, Item> tempItems = copyDict(mItems);
+                //Sort items
+                Item[] items = new Item[mItems.Count];
+                mItems.Values.CopyTo(items, 0);
+                Array.Sort(items, delegate(Item item1, Item item2)
+                {
+                    return item1.Layer.CompareTo(item2.Layer);
+                });
 
                 // create frame (main rendering)
-                Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems, mP1x, mP1y, mP2x, mP2y);
+                Frame frame = new Frame(mWidth, mHeight, mBackground, items, mP1x, mP1y, mP2x, mP2y);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+
+                items = null;
+                frame = null;
+
+                if (mForceGarbageCollector) GC.Collect();
 
                 // take time and wait for next frame
                 watch.Stop();
@@ -142,24 +153,6 @@ namespace KuhlEngine
                 if (mSleep > 0) Thread.Sleep(mSleep);
 
                 watch = null;
-                tempItems = null;
-                frame = null;
-
-                if (mForceGarbageCollector) GC.Collect();
-            }
-        }
-
-        private Dictionary<string, Item> copyDict(Dictionary<string, Item> source)
-        {
-
-            lock (mSyncLock)
-            {
-                Dictionary<string, Item> target = new Dictionary<string, Item>();
-                foreach (KeyValuePair<string, Item> keyPair in source)
-                {
-                    target[keyPair.Key] = keyPair.Value;
-                }
-                return target;
             }
         }
 
@@ -171,6 +164,7 @@ namespace KuhlEngine
             //Render Logo
             Texture background = new Texture(0, 0, 0);
             background.Stretch = false;
+            background.Resize(mWidth, mHeight);
 
             //Render Logo
             Texture logoTexture = new Texture("");
@@ -181,28 +175,25 @@ namespace KuhlEngine
                 Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
 
                 //Create logo item
-                Item logoItem = new Item("logo");
-                logoItem.Enabled = true;
-                logoItem.Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
-                logoItem.Width = mWidth / 3;
-                logoItem.Height = logoItem.Width;
-                logoItem.X = (mWidth / 2) - (logoItem.Width / 2);
-                logoItem.Y = (mHeight / 2) - (logoItem.Height / 2);
+                Item[] logoItem = new Item[1];
+                logoItem[0] = new Item("logo");
+                logoItem[0].Enabled = true;
+                logoItem[0].Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
+                logoItem[0].Width = mWidth / 3;
+                logoItem[0].Height = logoItem[0].Width;
+                logoItem[0].X = (mWidth / 2) - (logoItem[0].Width / 2);
+                logoItem[0].Y = (mHeight / 2) - (logoItem[0].Height / 2);
 
-                logoItem.Texture.Resize(logoItem.Width, logoItem.Height);
-                logoItem.Texture.SetOpacity(0.01F * counter);
-
-                //Add object
-                logoObjects.Add("logo", logoItem);
-
+                logoItem[0].Texture.Resize(logoItem[0].Width, logoItem[0].Height);
+                logoItem[0].Texture.SetOpacity(0.01F * counter);
                 // create Logo frame 
-                Frame frame = new Frame(mWidth, mHeight, background, logoObjects, 0, 0, mWidth, mHeight);
+                Frame frame = new Frame(mWidth, mHeight, background, logoItem, 0, 0, mWidth, mHeight);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
 
                 frame = null;
-                logoItem = null;
+                logoObjects = null;
                 logoItem = null;
 
                 if (mForceGarbageCollector) GC.Collect();
@@ -214,29 +205,26 @@ namespace KuhlEngine
                 //Logo screen objects
                 Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
 
-                //Create logo item
-                Item logoItem = new Item("logo");
-                logoItem.Enabled = true;
-                logoItem.Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
-                logoItem.Width = mWidth / 3;
-                logoItem.Height = logoItem.Width;
-                logoItem.X = (mWidth / 2) - (logoItem.Width / 2);
-                logoItem.Y = (mHeight / 2) - (logoItem.Height / 2);
+                ///Create logo item
+                Item[] logoItem = new Item[1];
+                logoItem[0] = new Item("logo");
+                logoItem[0].Enabled = true;
+                logoItem[0].Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
+                logoItem[0].Width = mWidth / 3;
+                logoItem[0].Height = logoItem[0].Width;
+                logoItem[0].X = (mWidth / 2) - (logoItem[0].Width / 2);
+                logoItem[0].Y = (mHeight / 2) - (logoItem[0].Height / 2);
 
-                logoItem.Texture.Resize(logoItem.Width, logoItem.Height);
-                logoItem.Texture.SetOpacity(0.01F * counter);
-
-                //Add object
-                logoObjects.Add("logo", logoItem);
-
+                logoItem[0].Texture.Resize(logoItem[0].Width, logoItem[0].Height);
+                logoItem[0].Texture.SetOpacity(0.01F * counter);
                 // create Logo frame 
-                Frame frame = new Frame(mWidth, mHeight, background, logoObjects, 0, 0, mWidth, mHeight);
+                Frame frame = new Frame(mWidth, mHeight, background, logoItem, 0, 0, mWidth, mHeight);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
 
                 frame = null;
-                logoItem = null;
+                logoObjects = null;
                 logoItem = null;
 
                 if (mForceGarbageCollector) GC.Collect();
@@ -505,7 +493,7 @@ namespace KuhlEngine
                 Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
 
                 // fill dictionary
-                foreach (KeyValuePair<string, Item> Keypair in copyDict(mItems))
+                foreach (KeyValuePair<string, Item> Keypair in new Dictionary<string, Item>(mItems))
                 {
                     if (Keypair.Value.CheckCollision && Keypair.Value.Enabled)
                     {
