@@ -20,6 +20,12 @@ namespace KuhlEngine
         //Start rendering
         private Boolean mStart = false;
 
+        //Camera
+        private int mP1x = 0;
+        private int mP1y = 0;
+        private int mP2x = 300;
+        private int mP2y = 300;
+
         #endregion
 
         #region Settings
@@ -39,12 +45,12 @@ namespace KuhlEngine
         /// <summary>
         /// Width of the rendered frames
         /// </summary>
-        public int Width { get { return mWidth; } set { mWidth = value; } }
+        public int Width { get { return mWidth; } set { mWidth = value; mP2x = value; } }
 
         /// <summary>
         /// Height of the rendered frames
         /// </summary>
-        public int Height { get { return mHeight; } set { mHeight = value; } }
+        public int Height { get { return mHeight; } set { mHeight = value; mP2y = value; } }
 
         /// <summary>
         /// A texture object for the background, will be empty/transparent if not set
@@ -89,16 +95,10 @@ namespace KuhlEngine
                 watch.Start();
 
                 // move item dictionary to a temporary dictionary to avoid problems with changes while rendering
-                //Dictionary<string, Item> tempItems = new Dictionary<string, Item>();
-                //foreach (KeyValuePair<string, Item> keyPair in mItems)
-                //{
-                //    tempItems[keyPair.Key] = keyPair.Value;
-                //}
-
                 Dictionary<string, Item> tempItems = copyDict(mItems);
 
                 // create frame (main rendering)
-                Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems);
+                Frame frame = new Frame(mWidth, mHeight, mBackground, tempItems, mP1x, mP1y, mP2x, mP2y);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
@@ -158,7 +158,7 @@ namespace KuhlEngine
                 logoObjects.Add("logo", logoItem);
 
                 // create Logo frame 
-                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
+                Frame frame = new Frame(mWidth, mHeight, background, logoObjects, 0, 0, mWidth, mHeight);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
@@ -185,7 +185,7 @@ namespace KuhlEngine
                 logoObjects.Add("logo", logoItem);
 
                 // create Logo frame 
-                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
+                Frame frame = new Frame(mWidth, mHeight, background, logoObjects, 0, 0, mWidth, mHeight);
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
@@ -464,6 +464,18 @@ namespace KuhlEngine
                 return Physics.testForCollision(aItem, collisionItems, aType);
             }
             else return true;
+        }
+
+        #endregion
+
+        #region Camera
+
+        public void SetCamera(int aP1x, int aP1y, int aP2x, int aP2y)
+        {
+            mP1x = aP1x;
+            mP1y = aP1y;
+            mP2x = aP2x;
+            mP2y = aP2y;
         }
 
         #endregion
