@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace KuhlEngine
@@ -18,7 +19,7 @@ namespace KuhlEngine
 
         // stretch or repeat image to fill size?
         //true = Stretch the Image; false = Repeat the Image
-        private Boolean mStretch = true;    
+        private Boolean mStretch = true;
 
 
         // propertys, image is read only
@@ -38,7 +39,7 @@ namespace KuhlEngine
             if (!File.Exists(aPath))
             {
                 mOriTexture = new Bitmap(16, 16);
-                
+
                 // create graphic to draw
                 Graphics g = Graphics.FromImage(mOriTexture);
 
@@ -141,6 +142,46 @@ namespace KuhlEngine
         #endregion
 
         #region Edit
+
+        /// <summary>
+        /// Change the opacity of the Texture
+        /// </summary>
+        /// <param name="aOpacity"></param>
+        /// <returns></returns>
+        public Boolean SetOpacity(float aOpacity)
+        {
+            try
+            {
+                //create a Bitmap the size of the image provided  
+                Bitmap bmp = new Bitmap(mTexture.Width, mTexture.Height);
+
+                //create a graphics object from the image  
+                Graphics gfx = Graphics.FromImage(bmp);
+
+
+                //create a color matrix object  
+                ColorMatrix matrix = new ColorMatrix();
+
+                //set the opacity 
+                matrix.Matrix33 = aOpacity;
+
+                //create image attributes  
+                ImageAttributes attributes = new ImageAttributes();
+
+                //set the color(opacity) of the image  
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+
+                //now draw the image  
+                gfx.DrawImage(mTexture, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, mTexture.Width, mTexture.Height, GraphicsUnit.Pixel, attributes);
+
+                mTexture = bmp;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Flip the image to the x-axis

@@ -29,6 +29,7 @@ namespace KuhlEngine
         private int mWidth = 300;
         private int mHeight = 300;
         private Texture mBackground = new Texture();
+        private Boolean mShowStartscreen = true;
 
         /// <summary>
         /// Maximum Frames Per Second: If there is time left, the engine will wait the remaining 1/FPS seconds until next frame
@@ -49,6 +50,11 @@ namespace KuhlEngine
         /// A texture object for the background, will be empty/transparent if not set
         /// </summary>
         public Texture Background { get { return mBackground; } set { mBackground = value; } }
+
+        /// <summary>
+        /// Shows the TeamKuhl Startscreen
+        /// </summary>
+        public Boolean ShowStartscreen { get { return mShowStartscreen; } set { mShowStartscreen = value; } }
 
         #endregion
 
@@ -71,35 +77,8 @@ namespace KuhlEngine
         {
             if (!mStart)
             {
-                //Render Logo
-                Texture background = new Texture(0, 0, 0);
-
-                //Render Logo
-                Texture logoTexture = new Texture("");
-
-                //Logo screen objects
-                Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
-
-                //Create logo item
-                Item logoItem = new Item("logo");
-                logoItem.Enabled = true;
-                logoItem.Texture = new Texture("");
-                logoItem.Width = 50;
-                logoItem.Height = 50;
-                logoItem.X = 0;
-                logoItem.Y = 0;
-
-                //Add object
-                logoObjects.Add("logo", logoItem);
-
-                // create Logo frame 
-                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
-
-                // fire event
-                if (Event.NewFrame != null) Event.NewFrame(frame.Image);
-                Thread.Sleep(2000);
-
-                mStart = true;
+                if (mShowStartscreen) showStartscreen();
+                else mStart = true;
             }
 
             // main rendering loop
@@ -144,7 +123,76 @@ namespace KuhlEngine
                 }
                 return target;
             }
+        }
 
+        /// <summary>
+        /// Create the Startscreen
+        /// </summary>
+        private void showStartscreen()
+        {
+            //Render Logo
+            Texture background = new Texture(0, 0, 0);
+            background.Stretch = false;
+
+            //Render Logo
+            Texture logoTexture = new Texture("");
+
+            for (int counter = 0; counter < 100; counter++)
+            {
+                //Logo screen objects
+                Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
+
+                //Create logo item
+                Item logoItem = new Item("logo");
+                logoItem.Enabled = true;
+                logoItem.Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
+                logoItem.Width = mWidth / 3;
+                logoItem.Height = logoItem.Width;
+                logoItem.X = (mWidth / 2) - (logoItem.Width / 2);
+                logoItem.Y = (mHeight / 2) - (logoItem.Height / 2);
+
+                logoItem.Texture.Resize(logoItem.Width, logoItem.Height);
+                logoItem.Texture.SetOpacity(0.01F * counter);
+
+                //Add object
+                logoObjects.Add("logo", logoItem);
+
+                // create Logo frame 
+                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
+
+                // fire event
+                if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+                Thread.Sleep(2);
+            }
+            for (int counter = 100; counter > 0; counter--)
+            {
+                //Logo screen objects
+                Dictionary<string, Item> logoObjects = new Dictionary<string, Item>();
+
+                //Create logo item
+                Item logoItem = new Item("logo");
+                logoItem.Enabled = true;
+                logoItem.Texture = new Texture(KuhlEngine.Properties.Resources.TeamKuhl_LOGO_Nice);
+                logoItem.Width = mWidth / 3;
+                logoItem.Height = logoItem.Width;
+                logoItem.X = (mWidth / 2) - (logoItem.Width / 2);
+                logoItem.Y = (mHeight / 2) - (logoItem.Height / 2);
+
+                logoItem.Texture.Resize(logoItem.Width, logoItem.Height);
+                logoItem.Texture.SetOpacity(0.01F * counter);
+
+                //Add object
+                logoObjects.Add("logo", logoItem);
+
+                // create Logo frame 
+                Frame frame = new Frame(mWidth, mHeight, background, logoObjects);
+
+                // fire event
+                if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+                Thread.Sleep(2);
+            }
+
+            mStart = true;
         }
 
         #endregion
