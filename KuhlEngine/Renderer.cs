@@ -3,6 +3,7 @@ using System.Threading;
 using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 
 namespace KuhlEngine
 {
@@ -36,6 +37,38 @@ namespace KuhlEngine
         private int mHeight = 300;
         private Texture mBackground = new Texture();
         private Boolean mShowStartscreen = true;
+        //Quallity
+        internal static SmoothingMode mSmoothingMode = SmoothingMode.None;
+        internal static InterpolationMode mInterpolationMode = InterpolationMode.Low;
+        internal static CompositingQuality mCompositingQuality = CompositingQuality.HighSpeed;
+        internal static PixelOffsetMode mPixelOffsetMode = PixelOffsetMode.None;
+
+        private Boolean mForceGarbageCollector = false;
+
+        /// <summary>
+        /// Force the garbage collector to work every frame
+        /// </summary>
+        public Boolean ForceGarbageCollector { get { return mForceGarbageCollector; } set { mForceGarbageCollector = value; } }
+
+        /// <summary>
+        /// Set the SmoothingMode of the engine
+        /// </summary>
+        public SmoothingMode SmoothingMode { get { return mSmoothingMode; } set { mSmoothingMode = value; } }
+
+        /// <summary>
+        /// Set the InterpolationMode of the engine
+        /// </summary>
+        public InterpolationMode InterpolationMode { get { return mInterpolationMode; } set { mInterpolationMode = value; } }
+
+        /// <summary>
+        /// Set the CompositingQuality of the engine
+        /// </summary>
+        public CompositingQuality CompositingQuality { get { return mCompositingQuality; } set { mCompositingQuality = value; } }
+
+        /// <summary>
+        /// Set the PixelOffsetMode of the engine
+        /// </summary>
+        public PixelOffsetMode PixelOffsetMode { get { return mPixelOffsetMode; } set { mPixelOffsetMode = value; } }
 
         /// <summary>
         /// Maximum Frames Per Second: If there is time left, the engine will wait the remaining 1/FPS seconds until next frame
@@ -108,6 +141,11 @@ namespace KuhlEngine
                 int mSleep = 1000 / mFPS - Convert.ToInt32(watch.ElapsedMilliseconds);
                 if (mSleep > 0) Thread.Sleep(mSleep);
 
+                watch = null;
+                tempItems = null;
+                frame = null;
+
+                if (mForceGarbageCollector) GC.Collect();
             }
         }
 
@@ -162,6 +200,13 @@ namespace KuhlEngine
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+
+                frame = null;
+                logoItem = null;
+                logoItem = null;
+
+                if (mForceGarbageCollector) GC.Collect();
+
                 Thread.Sleep(2);
             }
             for (int counter = 100; counter > 0; counter--)
@@ -189,6 +234,13 @@ namespace KuhlEngine
 
                 // fire event
                 if (Event.NewFrame != null) Event.NewFrame(frame.Image);
+
+                frame = null;
+                logoItem = null;
+                logoItem = null;
+
+                if (mForceGarbageCollector) GC.Collect();
+
                 Thread.Sleep(2);
             }
 
