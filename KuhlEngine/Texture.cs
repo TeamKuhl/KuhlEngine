@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace KuhlEngine
 {
@@ -38,7 +39,10 @@ namespace KuhlEngine
             //first, create a dummy bitmap just to get a graphics object
             Image img = new Bitmap(1, 1);
             Graphics drawing = Graphics.FromImage(img);
-            drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+            drawing.InterpolationMode = Renderer.mInterpolationMode;
+            drawing.SmoothingMode = Renderer.mSmoothingMode;
+            drawing.CompositingQuality = Renderer.mCompositingQuality;
+            drawing.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
             //measure the string to see how big the image needs to be
             SizeF textSize = drawing.MeasureString(text, font);
@@ -62,7 +66,7 @@ namespace KuhlEngine
 
             textBrush.Dispose();
             drawing.Dispose();
-            
+
             mOriTexture = img;
             mTexture = mOriTexture;
         }
@@ -79,6 +83,10 @@ namespace KuhlEngine
 
                 // create graphic to draw
                 Graphics g = Graphics.FromImage(mOriTexture);
+                g.InterpolationMode = Renderer.mInterpolationMode;
+                g.SmoothingMode = Renderer.mSmoothingMode;
+                g.CompositingQuality = Renderer.mCompositingQuality;
+                g.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
                 // load color
                 Color clr = Color.FromArgb(255, 255, 0, 220);
@@ -93,6 +101,7 @@ namespace KuhlEngine
                 g.FillRectangle(brush, 0, 0, 8, 8);
                 g.FillRectangle(brush, 8, 8, 16, 16);
 
+                g.Dispose();
                 // set texture
                 mTexture = mOriTexture;
             }
@@ -152,6 +161,10 @@ namespace KuhlEngine
 
             // create graphic to draw
             Graphics g = Graphics.FromImage(mOriTexture);
+            g.InterpolationMode = Renderer.mInterpolationMode;
+            g.SmoothingMode = Renderer.mSmoothingMode;
+            g.CompositingQuality = Renderer.mCompositingQuality;
+            g.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
             // load color
             Color clr = Color.FromArgb(aT, aR, aG, aB);
@@ -161,6 +174,8 @@ namespace KuhlEngine
 
             // draw brush on texture
             g.FillRectangle(brush, 0, 0, 16, 16);
+
+            g.Dispose();
 
             // set texture
             mTexture = mOriTexture;
@@ -194,6 +209,10 @@ namespace KuhlEngine
 
                 //create a graphics object from the image  
                 Graphics gfx = Graphics.FromImage(bmp);
+                gfx.InterpolationMode = Renderer.mInterpolationMode;
+                gfx.SmoothingMode = Renderer.mSmoothingMode;
+                gfx.CompositingQuality = Renderer.mCompositingQuality;
+                gfx.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
 
                 //create a color matrix object  
@@ -210,6 +229,8 @@ namespace KuhlEngine
 
                 //now draw the image  
                 gfx.DrawImage(mTexture, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, mTexture.Width, mTexture.Height, GraphicsUnit.Pixel, attributes);
+
+                gfx.Dispose();
 
                 mTexture = bmp;
                 return true;
@@ -290,6 +311,10 @@ namespace KuhlEngine
                     // create new texture and graphic
                     Bitmap Texture = new Bitmap(aWidth, aHeight);
                     Graphics g = Graphics.FromImage(Texture);
+                    g.InterpolationMode = Renderer.mInterpolationMode;
+                    g.SmoothingMode = Renderer.mSmoothingMode;
+                    g.CompositingQuality = Renderer.mCompositingQuality;
+                    g.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
                     // draw repetitions on image
                     for (int yCount = 0; yCount < heightAmount; yCount++)

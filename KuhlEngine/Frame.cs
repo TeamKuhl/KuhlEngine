@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace KuhlEngine
 {
@@ -35,6 +38,10 @@ namespace KuhlEngine
 
             // get graphic from image
             Graphics drawGraphic = Graphics.FromImage(mFrame);
+            drawGraphic.InterpolationMode = Renderer.mInterpolationMode;
+            drawGraphic.SmoothingMode = Renderer.mSmoothingMode;
+            drawGraphic.CompositingQuality = Renderer.mCompositingQuality;
+            drawGraphic.PixelOffsetMode = Renderer.mPixelOffsetMode;
 
             // sort layers
             var sortedItems = from pair in aItems orderby pair.Value.Layer ascending select pair;
@@ -56,14 +63,18 @@ namespace KuhlEngine
                 }
             }
 
-
+            //Camera
             Image resizedFrame = new Bitmap(aP2x - aP1x, aP2y - aP1y);
             Graphics resizeGraphic = Graphics.FromImage(resizedFrame);
+            resizeGraphic.InterpolationMode = Renderer.mInterpolationMode;
+            resizeGraphic.SmoothingMode = Renderer.mSmoothingMode;
+            resizeGraphic.CompositingQuality = Renderer.mCompositingQuality;
+            resizeGraphic.PixelOffsetMode = Renderer.mPixelOffsetMode;
             resizeGraphic.DrawImage(mFrame, new Point(aP1x * (-1), aP1x * (-1)));
 
             mFrame = new Bitmap(resizedFrame, new Size(aWidth, aHeight));
-            resizeGraphic.Dispose();
 
+            resizeGraphic.Dispose();
 
             // dispose graphic
             drawGraphic.Dispose();
