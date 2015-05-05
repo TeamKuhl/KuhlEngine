@@ -31,6 +31,43 @@ namespace KuhlEngine
         #region Constructors
 
         /// <summary>
+        /// Constructor with Text
+        /// </summary>
+        public Texture(String text, Font font, Color textColor)
+        {
+            //first, create a dummy bitmap just to get a graphics object
+            Image img = new Bitmap(1, 1);
+            Graphics drawing = Graphics.FromImage(img);
+            drawing.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+
+            //measure the string to see how big the image needs to be
+            SizeF textSize = drawing.MeasureString(text, font);
+
+            //free up the dummy image and old graphics object
+            img.Dispose();
+            drawing.Dispose();
+
+            //create a new image of the right size
+            img = new Bitmap((int)textSize.Width, (int)textSize.Height);
+
+            drawing = Graphics.FromImage(img);
+
+            //paint the background
+            drawing.Clear(Color.Transparent);
+
+            //create a brush for the text
+            Brush textBrush = new SolidBrush(textColor);
+
+            drawing.DrawString(text, font, textBrush, 0, 0);
+
+            textBrush.Dispose();
+            drawing.Dispose();
+            
+            mOriTexture = img;
+            mTexture = mOriTexture;
+        }
+
+        /// <summary>
         /// Constructor with image as path for texture
         /// </summary>
         /// <param name="aPath">path to the image</param>

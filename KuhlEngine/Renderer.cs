@@ -447,19 +447,23 @@ namespace KuhlEngine
 
         private bool checkCollisions(Item aItem, int aType)
         {
-            // create dictionary with collision items
-            Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
-
-            // fill dictionary
-            foreach (KeyValuePair<string, Item> Keypair in copyDict(mItems))
+            if (aItem.CheckCollision)
             {
-                if (Keypair.Value.CheckCollision && Keypair.Value.Enabled)
-                {
-                    collisionItems[Keypair.Key] = Keypair.Value;
-                }
-            }
+                // create dictionary with collision items
+                Dictionary<string, Item> collisionItems = new Dictionary<string, Item>();
 
-            return Physics.testForCollision(aItem, collisionItems, aType);
+                // fill dictionary
+                foreach (KeyValuePair<string, Item> Keypair in copyDict(mItems))
+                {
+                    if (Keypair.Value.CheckCollision && Keypair.Value.Enabled)
+                    {
+                        collisionItems[Keypair.Key] = Keypair.Value;
+                    }
+                }
+
+                return Physics.testForCollision(aItem, collisionItems, aType);
+            }
+            else return true;
         }
 
         #endregion
