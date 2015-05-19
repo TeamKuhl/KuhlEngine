@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace KuhlEngine
 {
@@ -110,6 +111,36 @@ namespace KuhlEngine
             WorkerThread.Start();
         }
 
+        private int currentFrame = 0;
+        private void NextFrame()
+        {
+            foreach (KeyValuePair<string, Item> keypair in mItems)
+            {
+                if (keypair.Value.mGIF)
+                {
+                    Image gifImage = keypair.Value.Texture.mOriTexture;
+
+                    FrameDimension dimension = new FrameDimension(gifImage.FrameDimensionsList[0]);
+                    int frameCount = gifImage.GetFrameCount(dimension);
+
+                    currentFrame += 1;
+
+                    if (currentFrame >= frameCount)
+                    {
+                        currentFrame = Math.Abs(currentFrame - frameCount);
+                    }
+                    gifImage.SelectActiveFrame(dimension, currentFrame);
+                    Bitmap curGif = new Bitmap(gifImage.Width, gifImage.Height);
+
+                    Graphics g = Graphics.FromImage(curGif);
+                    g.DrawImage((Bitmap)gifImage.Clone(), new Point(0, 0));
+                    g.Dispose();
+
+                    keypair.Value.Texture.SetImage(curGif);
+                }
+            }
+        }
+
         /// <summary>
         /// Engine thread worker: Contains the main rendering loop, fires the rendering event and waits to match FPS
         /// </summary>
@@ -128,6 +159,7 @@ namespace KuhlEngine
                 var watch = new Stopwatch();
                 watch.Start();
 
+                
                 //Sort items
                 Item[] items = new Item[mItems.Count];
                 mItems.Values.CopyTo(items, 0);
@@ -136,6 +168,7 @@ namespace KuhlEngine
                     return item1.Layer.CompareTo(item2.Layer);
                 });
 
+                //NextFrame();
                 // create frame (main rendering)
                 Frame frame = new Frame(mWidth, mHeight, mBackground, items, mP1x, mP1y, mP2x, mP2y);
 

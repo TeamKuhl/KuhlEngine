@@ -15,7 +15,7 @@ namespace KuhlEngine
         #region Declarations
 
         // save current texture image and original for later resizing
-        private Image mOriTexture;
+        internal Image mOriTexture;
         private Image mTexture;
 
         // stretch or repeat image to fill size?
@@ -194,6 +194,11 @@ namespace KuhlEngine
         #endregion
 
         #region Edit
+
+        internal void SetImage(Image aImage)
+        {
+            mTexture = aImage;
+        }
 
         /// <summary>
         /// Change the opacity of the Texture

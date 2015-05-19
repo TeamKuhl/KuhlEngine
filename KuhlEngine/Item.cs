@@ -32,6 +32,8 @@ namespace KuhlEngine
         // uuid
         private string mUuid = "";
 
+        public bool mGIF = false;
+
         #endregion
 
         #region Getter & Setter
